@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import classes from './AddUser.module.css';
 import Card from '../UI/Card';
 import Button from '../UI/Button';
 import ErrorModal from '../UI/ErrorModal';
 
 const AddUser = (props) => {
-  const [enteredUserName, setEnteredUserName] = useState('');
-  const [enteredUserAge, setEnteredUserAge] = useState('');
   const [error, setError] = useState();
+
+  const enteredName = useRef();
+  const enteredAge = useRef();
 
   const addUserHandler = (event) => {
     event.preventDefault();
+
+    const enteredUserName = enteredName.current.value;
+    const enteredUserAge = enteredName.current.value;
 
     if (
       enteredUserName.trim().length === 0 ||
@@ -33,17 +37,10 @@ const AddUser = (props) => {
     }
 
     props.onAddUser(enteredUserName, enteredUserAge);
-    setEnteredUserName('');
-    setEnteredUserAge('');
+    enteredName.current.value = '';
+    enteredAge.current.value = '';
 
-    document.getElementById('name').focus();
-  };
-
-  const nameChangeHandler = (event) => {
-    setEnteredUserName(event.target.value);
-  };
-  const ageChangeHandler = (event) => {
-    setEnteredUserAge(event.target.value);
+    enteredName.current.focus();
   };
 
   const errorHandler = () => setError(null);
@@ -60,19 +57,9 @@ const AddUser = (props) => {
       <Card className={classes.input}>
         <form onSubmit={addUserHandler}>
           <label htmlFor="name">Username</label>
-          <input
-            type="text"
-            id="name"
-            onChange={nameChangeHandler}
-            value={enteredUserName}
-          />
+          <input type="text" id="name" ref={enteredName} />
           <label htmlFor="age">Age (Years)</label>
-          <input
-            type="number"
-            id="age"
-            onChange={ageChangeHandler}
-            value={enteredUserAge}
-          />
+          <input type="number" id="age" ref={enteredAge} />
           <Button type="submit" onClick={addUserHandler}>
             Add User
           </Button>
